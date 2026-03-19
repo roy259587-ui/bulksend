@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#075E54">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BulkSend">
+<title>BulkSend</title>
+<style>
+:root{--g:#25D366;--gd:#075E54;--gm:#128C7E;--bg:#ECE5DD;--s:#fff;--s2:#f7f7f7;--bd:#e0e0e0;--t:#1a1a1a;--t2:#667781;--t3:#999;--r:14px;--rs:8px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);max-width:480px;margin:0 auto;min-height:100vh}
+.topbar{background:var(--gd);color:#fff;padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.topbar-title{font-size:19px;font-weight:700}
+.topbar-sub{font-size:12px;opacity:.75;margin-top:1px}
+.topbar-icon{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border:none;color:#fff}
+.tabs{display:flex;background:var(--gd);padding:0 18px}
+.tab{flex:1;text-align:center;padding:10px 0;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s}
+.tab.active{color:#fff;border-bottom-color:#fff}
+.screen{display:none;padding:14px}
+.screen.active{display:block}
+.card{background:var(--s);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.8px;color:var(--t2);margin-bottom:10px;text-transform:uppercase}
+textarea{width:100%;border:1.5px solid var(--bd);border-radius:var(--rs);padding:12px;font-family:inherit;font-size:15px;color:var(--t);background:var(--s2);resize:none;min-height:120px;outline:none;transition:border-color .2s;line-height:1.5}
+textarea:focus{border-color:var(--g);background:#fff}
+textarea::placeholder{color:var(--t3)}
+.hint{font-size:12px;color:var(--gm);margin-top:8px}
+button{border:none;border-radius:var(--rs);padding:11px 18px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:7px}
+button:active{transform:scale(.97)}
+.btn-g{background:var(--g);color:#fff}
+.btn-gh{background:var(--s2);color:var(--t);border:1.5px solid var(--bd)}
+.btn-full{width:100%;justify-content:center;padding:15px;font-size:16px;border-radius:var(--r)}
+.btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+input[type=text],input[type=tel]{width:100%;border:1.5px solid var(--bd);border-radius:var(--rs);padding:12px 14px;font-family:inherit;font-size:15px;color:var(--t);background:var(--s2);outline:none;transition:border-color .2s;margin-bottom:10px}
+input:focus{border-color:var(--g);background:#fff}
+input::placeholder{color:var(--t3)}
+.ci{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--bd);animation:si .2s ease}
+.ci:last-child{border-bottom:none}
+@keyframes si{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.av{width:40px;height:40px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;flex-shrink:0}
+.cn{font-weight:500;font-size:15px}
+.cp{font-size:12px;color:var(--t2);margin-top:1px;font-family:monospace}
+.db{background:none;border:none;cursor:pointer;color:var(--t3);font-size:18px;padding:6px;border-radius:50%;transition:all .15s}
+.empty{text-align:center;padding:28px 16px;color:var(--t3);font-size:14px}
+.badge{display:inline-block;background:var(--g);color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px}
+.ss{background:linear-gradient(135deg,var(--gd),var(--gm));border-radius:var(--r);padding:20px;color:#fff;margin-bottom:12px;text-align:center}
+.ssn{font-size:42px;font-weight:600}
+.ssl{font-size:14px;opacity:.8;margin-top:2px}
+.pb-wrap{background:var(--bd);border-radius:20px;height:8px;overflow:hidden;margin:12px 0}
+.pb{height:100%;background:var(--g);border-radius:20px;transition:width .3s ease;width:0%}
+.si2{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.si2:last-child{border-bottom:none}
+.st{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.sp{background:var(--s2);color:var(--t3)}
+.sd{background:#e6faf0;color:var(--g)}
+.sa{background:var(--g);color:#fff;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+.md{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;animation:su .25s ease}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mt{font-size:17px;font-weight:600;margin-bottom:16px}
+.mc{float:right;background:none;border:none;font-size:22px;cursor:pointer;color:var(--t2);margin-top:-3px}
+.saved-item{padding:12px 0;border-bottom:1px solid var(--bd);cursor:pointer}
+.saved-item:last-child{border-bottom:none}
+.sl{font-weight:500;font-size:14px;margin-bottom:3px;display:flex;align-items:center;justify-content:space-between}
+.sp2{font-size:13px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.install-bar{background:var(--gd);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px}
+.install-bar.hidden{display:none}
+.ib{background:#fff;color:var(--gd);border:none;border-radius:6px;padding:6px 14px;font-weight:700;font-size:13px;cursor:pointer}
+.tip-box{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:var(--r);padding:14px;margin-bottom:12px;font-size:13px;color:#166534;line-height:1.7}
+</style>
+</head>
+<body>
+
+<div class="install-bar hidden" id="ibar">
+  <span>&#128242; Install BulkSend as an app</span>
+  <button class="ib" id="iBtn">Install Now</button>
+</div>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">BulkSend</div>
+    <div class="topbar-sub" id="tsub">WhatsApp Forwarder</div>
+  </div>
+  <button class="topbar-icon" onclick="openSaved()">&#128190;</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="go('message')">Message</div>
+  <div class="tab" onclick="go('contacts')">Contacts <span class="badge" id="cbadge">0</span></div>
+  <div class="tab" onclick="go('send')">Send</div>
+</div>
+
+<!-- MESSAGE -->
+<div class="screen active" id="screen-message">
+  <div class="card">
+    <div class="lbl">Your message</div>
+    <textarea id="msgInput" placeholder="Paste or type the message you want to forward to everyone...&#10;&#10;Use {name} to personalize per contact"></textarea>
+    <div class="hint">&#128161; Use <b>{name}</b> — auto-replaced with each contact's name</div>
+    <div class="btn-row">
+      <button class="btn-gh" onclick="pasteMsg()">&#128203; Paste</button>
+      <button class="btn-gh" onclick="clearMsg()">&#128465; Clear</button>
+      <button class="btn-gh" onclick="openSaveModal()">&#128190; Save</button>
+    </div>
+  </div>
+  <div class="tip-box">
+    <b>How to forward from WhatsApp:</b><br>
+    1. Open WhatsApp &#8594; long-press any message<br>
+    2. Tap <b>Forward</b> (arrow icon) &#8594; tap <b>Share</b><br>
+    3. Select <b>BulkSend</b> from the list<br>
+    4. Message appears here automatically!
+  </div>
+</div>
+
+<!-- CONTACTS -->
+<div class="screen" id="screen-contacts">
+  <div class="card">
+    <div class="lbl">Add contact</div>
+    <input type="text" id="nn" placeholder="Name (e.g. Ahmed)" />
+    <input type="tel" id="np" placeholder="Phone with country code (e.g. 923001234567)" />
+    <div style="font-size:12px;color:var(--t2);margin-bottom:10px">No + sign needed &nbsp;|&nbsp; Pakistan=92 &nbsp; India=91 &nbsp; USA=1 &nbsp; UK=44 &nbsp; UAE=971</div>
+    <button class="btn-g btn-full" onclick="addContact()">+ Add Contact</button>
+  </div>
+  <div class="card">
+    <div class="lbl">Contacts <span class="badge" id="ccount">0</span></div>
+    <div id="clist"><div class="empty">No contacts yet — add some above</div></div>
+  </div>
+</div>
+
+<!-- SEND -->
+<div class="screen" id="screen-send">
+  <div class="ss">
+    <div class="ssn" id="scount">0</div>
+    <div class="ssl">contacts to receive this message</div>
+  </div>
+  <div class="card">
+    <div class="lbl">Message preview</div>
+    <div id="mprev" style="font-size:14px;color:var(--t2);line-height:1.6;min-height:40px;font-style:italic"></div>
+  </div>
+  <div class="pb-wrap" id="pbwrap" style="display:none"><div class="pb" id="pb"></div></div>
+  <div id="ptxt" style="font-size:13px;color:var(--t2);text-align:center;margin-bottom:10px;display:none"></div>
+  <button class="btn-g btn-full" id="sbtn" onclick="startSend()">&#128640; Start Forwarding to All</button>
+  <div class="card" style="margin-top:12px">
+    <div class="lbl">Send list</div>
+    <div id="slist"></div>
+  </div>
+</div>
+
+<!-- SAVED MODAL -->
+<div class="mo" id="savedMo">
+  <div class="md">
+    <button class="mc" onclick="document.getElementById('savedMo').classList.remove('open')">&#215;</button>
+    <div class="mt">Saved Messages</div>
+    <div id="savedList"><div class="empty">No saved messages yet</div></div>
+  </div>
+</div>
+
+<!-- SAVE MODAL -->
+<div class="mo" id="saveMo">
+  <div class="md">
+    <button class="mc" onclick="document.getElementById('saveMo').classList.remove('open')">&#215;</button>
+    <div class="mt">Save Message</div>
+    <input type="text" id="slabel" placeholder="Label (e.g. Eid Greeting)" />
+    <button class="btn-g btn-full" onclick="doSave()">Save</button>
+  </div>
+</div>
+
+<script>
+var contacts = JSON.parse(localStorage.getItem('bk_contacts')||'[]');
+var saved = JSON.parse(localStorage.getItem('bk_saved')||'[]');
+var dp = null, si = 0, sc = [], sm = '';
+
+// PWA Install
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault(); dp = e;
+  document.getElementById('ibar').classList.remove('hidden');
+});
+document.getElementById('iBtn').onclick = function(){
+  if(dp){ dp.prompt(); dp.userChoice.then(function(r){ if(r.outcome==='accepted') document.getElementById('ibar').classList.add('hidden'); dp=null; }); }
+};
+
+// Inline manifest via blob
+var manifest = {
+  name: "BulkSend — WhatsApp Forwarder",
+  short_name: "BulkSend",
+  start_url: window.location.href,
+  scope: window.location.pathname.split('/').slice(0,-1).join('/')+'/',
+  display: "standalone",
+  background_color: "#075E54",
+  theme_color: "#075E54",
+  icons: [{src: makeIcon(), sizes: "192x192", type: "image/png", purpose: "any maskable"}]
+};
+function makeIcon(){
+  var c = document.createElement('canvas'); c.width=192; c.height=192;
+  var x = c.getContext('2d');
+  x.fillStyle='#075E54'; x.fillRect(0,0,192,192);
+  x.fillStyle='#fff'; x.font='bold 110px sans-serif'; x.textAlign='center'; x.textBaseline='middle';
+  x.fillText('B',96,100);
+  return c.toDataURL('image/png');
+}
+var blob = new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+var murl = URL.createObjectURL(blob);
+var ml = document.createElement('link'); ml.rel='manifest'; ml.href=murl;
+document.head.appendChild(ml);
+
+// Service Worker (inline via blob)
+var swCode = `
+const CACHE='bksend-v3';
+self.addEventListener('install',e=>{self.skipWaiting();});
+self.addEventListener('activate',e=>{self.clients.claim();});
+self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>new Response('Offline')));});
+`;
+if('serviceWorker' in navigator){
+  var swBlob = new Blob([swCode],{type:'application/javascript'});
+  var swUrl = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).then(function(r){
+    console.log('SW registered');
+  }).catch(function(e){ console.log('SW failed',e); });
+}
+
+function go(name){
+  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',['message','contacts','send'][i]===name);});
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('screen-'+name).classList.add('active');
+  if(name==='send') refreshSend();
+}
+
+function renderContacts(){
+  var list=document.getElementById('clist');
+  var badge=document.getElementById('cbadge');
+  var count=document.getElementById('ccount');
+  badge.textContent=contacts.length; count.textContent=contacts.length;
+  document.getElementById('tsub').textContent=contacts.length+' contact'+(contacts.length!==1?'s':'')+' saved';
+  if(!contacts.length){list.innerHTML='<div class="empty">No contacts yet — add some above</div>';return;}
+  list.innerHTML=contacts.map(function(c,i){return '<div class="ci"><div class="av">'+c.name.charAt(0).toUpperCase()+'</div><div style="flex:1"><div class="cn">'+c.name+'</div><div class="cp">+'+c.phone+'</div></div><button class="db" onclick="delContact('+i+')">&#10005;</button></div>';}).join('');
+}
+
+function addContact(){
+  var n=document.getElementById('nn').value.trim();
+  var p=document.getElementById('np').value.trim().replace(/\D/g,'');
+  if(!n||!p){alert('Please enter both name and phone number.');return;}
+  contacts.push({name:n,phone:p});
+  localStorage.setItem('bk_contacts',JSON.stringify(contacts));
+  document.getElementById('nn').value=''; document.getElementById('np').value='';
+  renderContacts();
+}
+
+function delContact(i){
+  if(confirm('Remove '+contacts[i].name+'?')){contacts.splice(i,1);localStorage.setItem('bk_contacts',JSON.stringify(contacts));renderContacts();}
+}
+
+function pasteMsg(){
+  if(navigator.clipboard&&navigator.clipboard.readText){
+    navigator.clipboard.readText().then(function(t){document.getElementById('msgInput').value=t;}).catch(function(){alert('Long-press inside the message box then tap Paste');});
+  } else { alert('Long-press inside the message box then tap Paste'); }
+}
+
+function clearMsg(){if(confirm('Clear message?'))document.getElementById('msgInput').value='';}
+
+function openSaveModal(){
+  var m=document.getElementById('msgInput').value.trim();
+  if(!m){alert('Write a message first.');return;}
+  document.getElementById('saveMo').classList.add('open');
+  document.getElementById('slabel').value=''; document.getElementById('slabel').focus();
+}
+
+function doSave(){
+  var m=document.getElementById('msgInput').value.trim();
+  var l=document.getElementById('slabel').value.trim()||'Message '+(saved.length+1);
+  saved.push({label:l,msg:m}); localStorage.setItem('bk_saved',JSON.stringify(saved));
+  document.getElementById('saveMo').classList.remove('open');
+  alert('Saved as "'+l+'"!');
+}
+
+function openSaved(){
+  var list=document.getElementById('savedList');
+  if(!saved.length){list.innerHTML='<div class="empty">No saved messages yet</div>';}
+  else{list.innerHTML=saved.map(function(s,i){return '<div class="saved-item" onclick="loadSaved('+i+')"><div class="sl"><span>'+s.label+'</span><button onclick="event.stopPropagation();delSaved('+i+')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px">&#10005;</button></div><div class="sp2">'+s.msg+'</div></div>';}).join('');}
+  document.getElementById('savedMo').classList.add('open');
+}
+
+function loadSaved(i){document.getElementById('msgInput').value=saved[i].msg;document.getElementById('savedMo').classList.remove('open');go('message');}
+function delSaved(i){saved.splice(i,1);localStorage.setItem('bk_saved',JSON.stringify(saved));openSaved();}
+
+function refreshSend(){
+  var msg=document.getElementById('msgInput').value.trim();
+  document.getElementById('scount').textContent=contacts.length;
+  document.getElementById('mprev').textContent=msg||'(no message yet)';
+  var list=document.getElementById('slist');
+  if(!contacts.length){list.innerHTML='<div class="empty">No contacts added yet</div>';return;}
+  list.innerHTML=contacts.map(function(c,i){return '<div class="si2" id="si'+i+'"><div class="st sp" id="ss'+i+'">&#9711;</div><div><div class="cn">'+c.name+'</div><div class="cp">+'+c.phone+'</div></div></div>';}).join('');
+  document.getElementById('pbwrap').style.display='none';
+  document.getElementById('ptxt').style.display='none';
+  document.getElementById('sbtn').textContent='\uD83D\uDE80 Start Forwarding to All';
+  document.getElementById('sbtn').disabled=false;
+  document.getElementById('sbtn').onclick=startSend;
+}
+
+function startSend(){
+  var msg=document.getElementById('msgInput').value.trim();
+  if(!msg){alert('Please write or paste a message first.');go('message');return;}
+  if(!contacts.length){alert('Please add contacts first.');go('contacts');return;}
+  sc=[].concat(contacts); sm=msg; si=0;
+  document.getElementById('pbwrap').style.display='block';
+  document.getElementById('ptxt').style.display='block';
+  document.getElementById('sbtn').disabled=true;
+  document.getElementById('sbtn').textContent='Sending...';
+  sendNext();
+}
+
+function sendNext(){
+  if(si>=sc.length){
+    document.getElementById('pb').style.width='100%';
+    document.getElementById('ptxt').textContent='\u2705 All '+sc.length+' messages opened!';
+    document.getElementById('sbtn').textContent='\u2705 Done! Tap to Reset';
+    document.getElementById('sbtn').disabled=false;
+    document.getElementById('sbtn').onclick=refreshSend;
+    return;
+  }
+  var c=sc[si];
+  var msg2=sm.replace(/\{name\}/gi,c.name);
+  var url='https://wa.me/'+c.phone+'?text='+encodeURIComponent(msg2);
+  var pct=Math.round((si/sc.length)*100);
+  document.getElementById('pb').style.width=pct+'%';
+  document.getElementById('ptxt').textContent='Opening '+(si+1)+' of '+sc.length+': '+c.name+'...';
+  for(var j=0;j<si;j++){
+    var el=document.getElementById('ss'+j);
+    if(el){el.className='st sd';el.textContent='\u2713';}
+  }
+  var cur=document.getElementById('ss'+si);
+  if(cur){cur.className='st sa';cur.textContent='\u2192';}
+  window.open(url,'_blank');
+  si++;
+  if(si<sc.length){
+    setTimeout(function(){
+      if(confirm('('+(si)+'/'+sc.length+') Open WhatsApp for '+sc[si].name+'?')){sendNext();}
+      else{
+        document.getElementById('ptxt').textContent='Stopped at '+si+'/'+sc.length;
+        document.getElementById('sbtn').textContent='Resume';
+        document.getElementById('sbtn').disabled=false;
+        document.getElementById('sbtn').onclick=sendNext;
+      }
+    },800);
+  } else { setTimeout(sendNext,400); }
+}
+
+renderContacts();
+</script>
+</body>
+</html>
